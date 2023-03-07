@@ -2,28 +2,20 @@
 
 Running Pipeline:
 
-#Step01: Collect sample information.
+#Step01: DEGs analysis.
 
-sh step01.getSampleinfo.sh
+Rscript deg.LUAD.R
+Rscript deg.LUSC.R
+Rscript plot.LUAD.R
+Rscript plot.LUSC.R
 
-#Step02: Collect mutation data.
+#Step02: Functional enrichment analysis.
+Rscript enrich.R
 
-sh step02.getmaf.sh
+#Step03: Correlation analysis between PTPRT and other genes.
+Rscript plot.cor.R
 
-#Step03: pooled samples.
-
-sh step03.mergemaf.sh
-
-#Step04: pool sample information.
-
-sh step04.germarkermut.sh
-
-#Step05: prepare for fisher tables.
-
-sh step05.prepare.Fisher. sh
-
-#Step06: run for multiple cancer types and do p.adjust.
-
-sh step06.Fisherexact-test.sh
+#Step04: Correlation analysis between PTPRT and TMB/TNB.
+Rscript plot.tmb-tnb.R
 
 Author contact information: Chao Chen(gkd.chaochen@foxmail.com) .
