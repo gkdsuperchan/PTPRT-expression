@@ -1,0 +1,28 @@
+#https://zhuanlan.zhihu.com/p/74068599 
+ library(limma)
+ library(edgeR)
+ library(statmod)
+ library(ggplot2)
+ library(ggrepel)
+
+ setwd("D:/Project/PTPRT功能探索/expression/")
+ data <- read.table("LUAD.PTPRT.limma.dge.txt",header=TRUE,row.names = 1)
+ ggplot(data = data, aes(x = logFC, y = -log10(FDR))) + geom_point(alpha=0.8, size = 1)
+ data$change <- as.factor(ifelse(data$FDR < 0.01 & abs(data$logFC) > 0.25,ifelse(data$logFC > 0.25,'UP','DOWN'),'NOT')) 
+ data$sign <- ifelse(data$FDR < 0.01 & abs(data$logFC) > 2.5,rownames(data),NA)
+ 
+ genes <- read.table("interestgenes.LUAD.txt",header = F)
+ data$inter <- ifelse(rownames(data) %in% genes[,1] & data$FDR < 0.01 & abs(data$logFC) > 0.25 ,rownames(data),NA)
+ View(data)
+ 
+ ggplot(data = data, aes(x = logFC, y = -log10(FDR), color = change)) +
+  geom_point(alpha=0.5, size = 1) + theme_bw(base_size = 15) +
+  theme( panel.grid.minor = element_blank(),   panel.grid.major = element_blank()) + xlim(-2.5, 2.5)+ ylim(0, 20)+
+  scale_color_manual(name = "", values = c("red", "green", "black"), limits = c("UP", "DOWN", "NOT")) +
+  geom_label_repel(aes(label=inter), color="grey50", box.padding=unit(0.25, "lines"), point.padding=unit(0.25, "lines"),segment.colour = "grey50",size=3)
+ ggsave("LUAD.volcano.PTPRThigh-vs-PTPRT-low.v3.pdf",width=8,height=6)
+
+
+  
+
+

@@ -1,0 +1,24 @@
+library(ggplot2)
+library(ggthemr)     
+library(ggsignif) 
+ggthemr("flat")
+
+setwd("D:/Project/PTPRT功能探索/expression/")
+stat <- read.table("./LUAD.TPM.select.xls",header = T,row.names=1,sep="\t")
+stat <- t(stat)
+
+genes1 <- c("CCNB1","CCNB2","TOP2A","MKI67","MCM2","MCM4","MCM6","MCM10")
+genes2 <- c("TROAP","BIRC5","NUF2","AURKA","CENPA","CDCA3","CDC20","OIP5")
+genes3 <- c("LAMA2","CLDN16","ITGA8","ITGA9","SELP","PIK3R1","CD22","ITGA10")
+
+for (k in genes3)
+{
+ x <- stat[,c("PTPRT",k)]
+ x=log2(x+1)
+ cor <- cor.test(x[,1],x[,2],method = "spearman")
+ m<- as.data.frame(x)
+ hw_sp <- ggplot(m,aes(x=PTPRT,y=get(k)))
+ eqn <- sprintf("italic(R) ~ '=' ~ %.2g * ',' ~ italic(P) ~ '=' ~ %.2g",cor$estimate,cor$p.value)
+ hw_sp + geom_point(colour = "black", size = 0.6) + stat_smooth(method = lm) + annotate  ("text",x=Inf,y=Inf,label=eqn,parse=TRUE,hjust=2.3,vjust=2.8) + theme_classic() +theme(axis.line=element_line(colour="black",size = 1),axis.ticks.length=unit(.3,"lines"),axis.ticks=element_line(size = 0.6),plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) + labs(x ="PTPRT", y = k)
+ ggsave(paste0("./ggplot.","PTPRT-",k,".LUAD.pdf"),width=5,height=5)
+}

@@ -1,0 +1,76 @@
+library(ggplot2)
+library(ggthemr)     
+library(ggsignif) 
+ggthemr("flat")
+
+stat <- read.table("./LUAD.TMB.PTPRT.median.xls",header = T,row.names=1,sep="\t")
+  stat[,1]=log2(stat[,1]+1)
+  compaired <- list(c("PTPRT-H","PTPRT-L"))
+    p1 <- ggplot(stat, aes(Group, get(colnames(stat)[1]), fill = Group)) + geom_boxplot(size=0.5,width=0.5) + 
+    geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'TMB')
+    p1
+  ggsave(paste0("./ggplot.","PTPRT.TMB.LUAD.median.pdf"),width=5,height=6)
+
+stat[,3]=log2(stat[,3]+1)
+cor <- cor.test(stat[,1],stat[,3],method = "spearman")
+hw_sp <- ggplot(stat,aes(x=TMB,y=TPM))
+eqn <- sprintf("italic(R) ~ '=' ~ %.2g * ',' ~ italic(P) ~ '=' ~ %.2g",cor$estimate,cor$p.value)
+hw_sp + geom_point() + stat_smooth(method = lm) + annotate("text",x=Inf,y=Inf,label=eqn,parse=TRUE,hjust=2.3,vjust=2.8)
+ggsave(paste0("./ggplot.","PTPRT.TPM-VS-TMB.LUAD.pdf"),width=5,height=5)
+
+stat <- read.table("./LUSC.TMB.divided.median.xls",header = T,row.names=1,sep="\t")
+stat[,1]=log2(stat[,1]+1)
+compaired <- list(c("PTPRT-H","PTPRT-L"))
+    p1 <- ggplot(stat, aes(Group, get(colnames(stat)[1]), fill = Group)) + geom_boxplot(size=0.5,width=0.5) + 
+#  geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'IHC score')
+    geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'TMB')
+    p1
+ggsave(paste0("./ggplot.","PTPRT.TMB.LUSC.median.pdf"),width=5,height=6)
+
+stat[,3]=log2(stat[,3]+1)
+cor <- cor.test(stat[,1],stat[,3],method = "spearman")
+hw_sp <- ggplot(stat,aes(x=TMB,y=TPM))
+eqn <- sprintf("italic(R) ~ '=' ~ %.2g * ',' ~ italic(P) ~ '=' ~ %.2g",cor$estimate,cor$p.value)
+hw_sp + geom_point() + stat_smooth(method = lm) + annotate("text",x=Inf,y=Inf,label=eqn,parse=TRUE,hjust=2.3,vjust=2.8)
+ggsave(paste0("./ggplot.","PTPRT.TPM-VS-TMB.LUSC.pdf"),width=5,height=5)
+
+stat <- read.table("./LUAD.TNB.divided.median.xls",header = T,row.names=1,sep="\t")
+stat[,1]=log2(stat[,1]+1)
+compaired <- list(c("PTPRT-H","PTPRT-L"))
+    p1 <- ggplot(stat, aes(Group, get(colnames(stat)[1]), fill = Group)) + geom_boxplot(size=0.5,width=0.5) + 
+#  geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'IHC score')
+    geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'TNB')
+    p1
+ggsave(paste0("./ggplot.","PTPRT.TNB.LUAD.median.pdf"),width=5,height=6)
+
+stat[,3]=log2(stat[,3]+1)
+cor <- cor.test(stat[,1],stat[,3],method = "spearman")
+hw_sp <- ggplot(stat,aes(x=TNB,y=TPM))
+eqn <- sprintf("italic(R) ~ '=' ~ %.2g * ',' ~ italic(P) ~ '=' ~ %.2g",cor$estimate,cor$p.value)
+hw_sp + geom_point() + stat_smooth(method = lm) + annotate("text",x=Inf,y=Inf,label=eqn,parse=TRUE,hjust=2.3,vjust=2.8)
+ggsave(paste0("./ggplot.","PTPRT.TPM-VS-TNB.LUAD.pdf"),width=5,height=5)
+
+stat <- read.table("./LUSC.TNB.divided.median.xls",header = T,row.names=1,sep="\t")
+stat[,1]=log2(stat[,1]+1)
+compaired <- list(c("PTPRT-H","PTPRT-L"))
+    p1 <- ggplot(stat, aes(Group, get(colnames(stat)[1]), fill = Group)) + geom_boxplot(size=0.5,width=0.5) + 
+    geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'TNB')
+    p1
+ggsave(paste0("./ggplot.","PTPRT.TNB.LUSC.median.pdf"),width=5,height=6)
+
+stat <- read.table("./LUSC.TNB.divided.mean.xls",header = T,row.names=1,sep="\t")
+stat[,1]=log2(stat[,1]+1)
+stat[,3]=log2(stat[,3]+1)
+compaired <- list(c("PTPRT-H","PTPRT-L"))
+    p1 <- ggplot(stat, aes(Group, get(colnames(stat)[1]), fill = Group)) + geom_boxplot(size=0.5,width=0.5) + 
+    geom_signif(comparisons = compaired,step_increase = 1,test = wilcox.test, textsize = 3,margin_top =0.5)+labs(y= 'TNB')
+    p1
+ggsave(paste0("./ggplot.","PTPRT.TNB.LUSC.mean.pdf"),width=5,height=6)
+
+cor <- cor.test(stat[,1],stat[,3],method = "spearman")
+hw_sp <- ggplot(stat,aes(x=TNB,y=TPM))
+eqn <- sprintf("italic(R) ~ '=' ~ %.2g * ',' ~ italic(P) ~ '=' ~ %.2g",cor$estimate,cor$p.value)
+hw_sp + geom_point() + stat_smooth(method = lm) + annotate("text",x=Inf,y=Inf,label=eqn,parse=TRUE,hjust=2.3,vjust=2.8)
+ggsave(paste0("./ggplot.","PTPRT.TPM-VS-TNB.LUSC.pdf"),width=5,height=5)
+
+

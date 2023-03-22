@@ -1,0 +1,21 @@
+#https://www.jianshu.com/p/08e9c45b3574
+library(ggplot2)
+setwd("D:/Project/PTPRT功能探索/expression/")
+outdir <- 'D:/Project/PTPRT功能探索/expression/enrich/'
+pathway = read.csv("NSCLC.enrich.selected2.csv",header = TRUE,check.names = FALSE)
+head(pathway)
+p1<- ggplot(pathway,aes(Group,Pathway))+
+  geom_point(aes(size=Gene,color=FDR))+
+  scale_color_gradient(low = "red",high = "blue")+
+#用于设置1部分字体和颜色
+theme(legend.title=element_text(size=20, face="bold", color="black"), 
+  legend.text = element_text(size=18))+
+#用于设置2，即XY轴标题字体和颜色
+theme(axis.title.y = element_text(size = 25, face="bold", color="black", margin = margin(r = 50)),axis.title.x = element_text(margin = margin(t = 20)))+
+theme(axis.title.x = element_text(size = 25, face="bold", color="black"))+
+#用于设置XY的text的字体和颜色
+theme(axis.text.y = element_text(size = 14, face ="bold",color="black"))+
+theme(axis.text.x = element_text(size = 14, face ="bold",color="black",angle=90,vjust=0.5,hjust=0))
+
+p1
+ggsave(p1, filename="KEGG6.pdf", width=10, height=9, dpi=100)

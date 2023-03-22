@@ -1,0 +1,51 @@
+#参考：https://blog.csdn.net/FightingBob/article/details/104814298
+ library(limma)
+ library(edgeR)
+ library(statmod)
+ library(ggplot2)
+
+ exp <- read.table("D:/Project/PTPRT功能探索/expression/LUAD.PTPRT.exp.xls",header = T,row.names = 1)
+ dim(exp)
+
+ exp <- exp[,-1]
+
+ group <- rep(c("high","low"),each=255)
+ length(group)
+
+ group[1:5]
+ group[506:510]
+ group <- group[-510]
+ length(group)
+[1] 509
+
+ dgelist <-DGEList(counts = exp,group = group)
+ keep <- rowSums(cpm(dgelist)>1)>=2
+ dim(dgelist)
+[1] 35569   509
+ View(dgelist)
+ dgelist <- dgelist[keep,,keep.lib.sizes=FALSE]
+ dim(dgelist)
+[1] 22507   509
+ dgelist_norm <- calcNormFactors(dgelist,method = "TMM")
+ plotMDS(dgelist_norm,col=rep(c("red","blue"),each=5),dim=c(1,2))
+ design <- model.matrix(~group)
+design2 <- design
+dim(design2)
+ View(design2)
+design2[1:255,2] <- 1
+ design2[256:509,2] <- 0
+ View(design2)
+ colnames(design2)[2] <- 'PTPRT-high'
+ dge <- estimateDisp(dgelist_norm,design2,robust = TRUE)
+ plotBCV(dge)
+ fit <- glmFit(dge,design2,robust=TRUE)
+ lrt <- glmLRT(fit)
+ topTags(lrt)
+
+ write.table(topTags(lrt,n=nrow(dgelist$counts)),"D:/Project/PTPRT功能探索/expression/LUAD.PTPRT.limma.dge.xls",quote=F,sep="\t")
+ dge_de <- decideTestsDGE(lrt,adjust.method = "fdr",p.value = 0.05,lfc=0.25)
+ summary(dge_de)
+
+pdf("D:/Project/PTPRT功能探索/expression/LUAD.PTPRT-high-VS-PTPRT-low.pdf",width=5,height = 5)
+ plotMD(lrt,status = dge_de,values=c(-1,1),col=c("blue","red"),xlab = "Expression level",ylab = "Foldchange(log2)",main="PTPRT-high VS PTPRT-low samples in TCGA-LUAD cohort")
+dev.off()
